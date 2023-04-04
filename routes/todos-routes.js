@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const todosControllers = require('../controllers/todos-controllers');
-const { getTodos } = todosControllers;
+const { createTodo } = todosControllers;
 
 
 // const usersControllers = require('../controllers/users-controllers');
 
 
-router.get('/', getTodos);
+router.post('/', createTodo);
 
 
 
