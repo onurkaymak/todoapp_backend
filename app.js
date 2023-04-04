@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose')
+mongoose.set('strictQuery', true)
 
 const todosRoutes = require('./routes/todos-routes');
 const HttpError = require('./models/http-errors');
@@ -23,11 +25,13 @@ app.use((error, req, res, next) => {
 
 });
 
-
-
-
-app.listen(4000, () => {
-    console.log('listening on port 4000...');
-});
-
-
+mongoose.connect(`mongodb+srv://onur:gXlE1yc6KKfxbztG@cluster0.typb8ul.mongodb.net/todoApp?retryWrites=true&w=majority`)
+    .then(() => {
+        console.log('Mongoose connected to database.');
+        app.listen(process.env.PORT || 4000, () => {
+            console.log('Listening on port 4000...');
+        })
+    })
+    .catch(err => {
+        console.log(err, 'mongo');
+    })
