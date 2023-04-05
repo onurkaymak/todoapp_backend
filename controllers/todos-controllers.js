@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-errors');
+
 const Todo = require('../models/todo');
+const User = require('../models/user');
 
 
 const getTodoById = async (req, res, next) => {
@@ -25,6 +27,7 @@ const getTodoById = async (req, res, next) => {
     res.json({ todo: todo.toObject({ getters: true }) });
 }
 
+
 const createTodo = async (req, res, next) => {
 
     const { todo, creator } = req.body;
@@ -34,14 +37,29 @@ const createTodo = async (req, res, next) => {
         creator
     });
 
+    let user;
+    try {
+        user = await User.findById(creator);
+    } catch (err) {
+        const error = new HttpError('Creating place failed, please try again.', 500);
+        return next(error);
+    }
+
+    if (!user) {
+        const error = new HttpError('Could not find user for provided id.', 404);
+        return next(error);
+    }
+
     try {
         const sess = await mongoose.startSession();
         sess.startTransaction();
         await createdTodo.save({ session: sess });
+        user.todos.push(createdTodo);
+        await user.save({ session: sess });
         await sess.commitTransaction();
 
     } catch (err) {
-        const error = new HttpError('Creating todo is failed, please try again.', 500)
+        const error = new HttpError('Creating place is failed, please try again.', 500)
         return next(error);
     }
 
@@ -49,6 +67,9 @@ const createTodo = async (req, res, next) => {
     res.status(201).json({ todo: createdTodo });
 
 };
+
+
+
 
 module.exports = {
     createTodo,

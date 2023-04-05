@@ -7,7 +7,7 @@ const { createUser } = usersControllers;
 
 
 
-router.get('/', createUser);
+router.post('/', createUser);
 
 
 
