@@ -4,6 +4,26 @@ const HttpError = require('../models/http-errors');
 const Todo = require('../models/todo');
 
 
+const getTodoById = async (req, res, next) => {
+    const todoId = req.params.tid;
+
+    let todo;
+
+    try {
+        todo = await Todo.findById(todoId);
+    }
+    catch (err) {
+        const error = new HttpError('Database connection failed, could not find the place.', 500);
+        return next(error);
+    }
+
+    if (!todo) {
+        const error = new HttpError('Could not find a place for the provided id.', 404);
+        return next(error);
+    }
+
+    res.json({ todo: todo.toObject({ getters: true }) });
+}
 
 const createTodo = async (req, res, next) => {
 
@@ -31,5 +51,6 @@ const createTodo = async (req, res, next) => {
 };
 
 module.exports = {
-    createTodo
+    createTodo,
+    getTodoById
 };
