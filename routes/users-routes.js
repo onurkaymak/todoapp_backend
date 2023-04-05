@@ -3,11 +3,13 @@ const router = express.Router();
 
 const usersControllers = require('../controllers/users-controllers');
 
-const { createUser } = usersControllers;
+const { signUp, login } = usersControllers;
 
 
 
-router.post('/', createUser);
+router.post('/signup', signUp);
+
+router.post('/login', login);
 
 
 
