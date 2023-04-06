@@ -105,9 +105,41 @@ const updateTodo = async (req, res, next) => {
 }
 
 
+const deleteTodo = async (req, res, next) => {
+    const todoId = req.params.tid;
 
+    let todo;
+    try {
+        todo = await Todo.findById(todoId).populate('creator');
+    } catch (err) {
+        const error = new HttpError('Database connection failed, could not delete this todo.', 500);
+        return next(error);
+    }
 
+    if (!todo) {
+        const error = new HttpError('Could not find a todo for this id.', 404);
+        return next(error);
+    }
 
+    if (todo.creator.id !== req.userData.userId) {
+        const error = new HttpError('You are not allowed to delete this todo.', 401);
+        return next(error);
+    }
+
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await todo.deleteOne({ session: sess });
+        todo.creator.todos.pull(todo);
+        await todo.creator.save({ session: sess });
+        await sess.commitTransaction();
+    } catch (err) {
+        const error = new HttpError('Something went wrong, could not delete this todo.');
+        return next(error)
+    }
+
+    res.status(200).json({ message: `Todo is deleted; ${todo.todo}` });
+};
 
 
 
@@ -139,5 +171,6 @@ module.exports = {
     getTodosByUserId,
     createTodo,
     updateTodo,
+    deleteTodo,
     getTodoById
 };
