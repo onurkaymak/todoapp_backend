@@ -68,6 +68,49 @@ const createTodo = async (req, res, next) => {
 };
 
 
+const updateTodo = async (req, res, next) => {
+
+    const { orderedTodo } = req.body;
+    const todoId = req.params.tid;
+
+    let todo;
+    try {
+        todo = await Todo.findById(todoId);
+    }
+    catch (err) {
+        const error = new HttpError('Database connection failed, could not update the todo.', 500);
+        return next(error);
+    }
+
+    if (!todo) {
+        const error = new HttpError('Could not find a todo with provided id.', 500);
+        return next(error)
+    }
+
+    if (todo.creator.toString() !== req.userData.userId) {
+        const error = new HttpError('You are not allowed to edit this todo.', 401);
+        return next(error);
+    }
+
+    todo.todo = orderedTodo;
+
+    try {
+        await todo.save();
+    } catch (err) {
+        const error = new HttpError('Something went wrong, could not update the todo.', 500);
+        return next(error);
+    }
+
+    res.status(200).json({ todo: todo.toObject({ getters: true }) });
+}
+
+
+
+
+
+
+
+
 const getTodoById = async (req, res, next) => {
     const todoId = req.params.tid;
 
@@ -95,5 +138,6 @@ const getTodoById = async (req, res, next) => {
 module.exports = {
     getTodosByUserId,
     createTodo,
+    updateTodo,
     getTodoById
 };
