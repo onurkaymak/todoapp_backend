@@ -6,26 +6,25 @@ const Todo = require('../models/todo');
 const User = require('../models/user');
 
 
-const getTodoById = async (req, res, next) => {
-    const todoId = req.params.tid;
+const getTodosByUserId = async (req, res, next) => {
+    const userId = req.params.uid;
 
-    let todo;
-
+    let userWithTodos;
     try {
-        todo = await Todo.findById(todoId);
+        userWithTodos = await User.findById(userId).populate('todos');
     }
     catch (err) {
-        const error = new HttpError('Database connection failed, could not find the place.', 500);
+        const error = new HttpError('Database connection failed, could not find the user.', 500);
         return next(error);
     }
 
-    if (!todo) {
-        const error = new HttpError('Could not find a place for the provided id.', 404);
+    if (!userWithTodos || userWithTodos.length === 0) {
+        const error = new HttpError('Could not find any places for the provided user id.', 404)
         return next(error);
     }
 
-    res.json({ todo: todo.toObject({ getters: true }) });
-}
+    res.json({ todos: userWithTodos.todos.map(todo => todo.toObject({ getters: true })) });
+};
 
 
 const createTodo = async (req, res, next) => {
@@ -69,9 +68,32 @@ const createTodo = async (req, res, next) => {
 };
 
 
+const getTodoById = async (req, res, next) => {
+    const todoId = req.params.tid;
+
+    let todo;
+
+    try {
+        todo = await Todo.findById(todoId);
+    }
+    catch (err) {
+        const error = new HttpError('Database connection failed, could not find the place.', 500);
+        return next(error);
+    }
+
+    if (!todo) {
+        const error = new HttpError('Could not find a place for the provided id.', 404);
+        return next(error);
+    }
+
+    res.json({ todo: todo.toObject({ getters: true }) });
+}
+
+
 
 
 module.exports = {
+    getTodosByUserId,
     createTodo,
     getTodoById
 };

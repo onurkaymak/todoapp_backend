@@ -5,10 +5,10 @@ const todosControllers = require('../controllers/todos-controllers');
 
 const checkAuth = require('../middleware/check-auth');
 
-const { createTodo, getTodoById } = todosControllers;
+const { createTodo, getTodoById, getTodosByUserId } = todosControllers;
 
 
-router.get('/:tid', getTodoById);
+router.get('/:uid', getTodosByUserId);
 
 router.use(checkAuth);
 
