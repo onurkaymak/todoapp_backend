@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-errors');
 
+const { validationResult } = require('express-validator');
+
 const Todo = require('../models/todo');
 const User = require('../models/user');
 
@@ -29,18 +31,24 @@ const getTodosByUserId = async (req, res, next) => {
 
 const createTodo = async (req, res, next) => {
 
-    const { todo, creator } = req.body;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return next(new HttpError('Invalid inputs passed, please check your data.', 422));
+    }
+
+    const { todo } = req.body;
 
     const createdTodo = new Todo({
         todo,
-        creator
+        creator: req.userData.userId
     });
 
     let user;
     try {
-        user = await User.findById(creator);
+        user = await User.findById(req.userData.userId);
     } catch (err) {
-        const error = new HttpError('Creating place failed, please try again.', 500);
+        const error = new HttpError('Creating todo failed, please try again.', 500);
         return next(error);
     }
 

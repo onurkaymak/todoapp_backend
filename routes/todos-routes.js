@@ -1,5 +1,8 @@
 const express = require('express');
+
 const router = express.Router();
+
+const { check } = require('express-validator');
 
 const todosControllers = require('../controllers/todos-controllers');
 
@@ -12,7 +15,9 @@ router.get('/:uid', getTodosByUserId);
 
 router.use(checkAuth);
 
-router.post('/', createTodo);
+router.post('/', [
+    check('todo').not().isEmpty(),
+], createTodo);
 
 router.patch('/:tid', updateTodo);
 
