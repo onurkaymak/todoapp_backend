@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
+
 const bcrypt = require('bcryptjs');
+
 const jwt = require('jsonwebtoken');
+
+const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-errors');
 
@@ -8,6 +12,13 @@ const User = require('../models/user');
 
 
 const signUp = async (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return next(new HttpError('Invalid inputs passed, please check your data.(validation)', 422))
+    }
+
     const { name, email, password } = req.body;
 
     let existingUser;
