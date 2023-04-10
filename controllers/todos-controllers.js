@@ -78,6 +78,12 @@ const createTodo = async (req, res, next) => {
 
 const updateTodo = async (req, res, next) => {
 
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return next(new HttpError('Invalid inputs passed, please check your data.', 422));
+    }
+
     const { orderedTodo } = req.body;
     const todoId = req.params.tid;
 
