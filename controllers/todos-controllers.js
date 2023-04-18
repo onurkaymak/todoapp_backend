@@ -85,7 +85,7 @@ const updateTodo = async (req, res, next) => {
         return next(new HttpError('Invalid inputs passed, please check your data.', 422));
     }
 
-    const { orderedTodo } = req.body;
+    const { updatedTodo } = req.body;
     const todoId = req.params.tid;
 
     let todo;
@@ -107,7 +107,7 @@ const updateTodo = async (req, res, next) => {
         return next(error);
     }
 
-    todo.todo = orderedTodo;
+    todo.todo = updatedTodo;
 
     try {
         await todo.save();

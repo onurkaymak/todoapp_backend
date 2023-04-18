@@ -20,7 +20,7 @@ router.post('/', [
 ], createTodo);
 
 router.patch('/:tid', [
-    check('orderedTodo').not().isEmpty(),
+    check('updatedTodo').not().isEmpty(),
 ], updateTodo);
 
 router.delete('/:tid', deleteTodo);
