@@ -10,10 +10,9 @@ const checkAuth = require('../middleware/check-auth');
 
 const { createTodo, getTodoById, getTodosByUserId, updateTodo, deleteTodo } = todosControllers;
 
+router.use(checkAuth);
 
 router.get('/:uid', getTodosByUserId);
-
-router.use(checkAuth);
 
 router.post('/', [
     check('todo').not().isEmpty(),
