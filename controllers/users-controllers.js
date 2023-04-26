@@ -92,12 +92,12 @@ const login = async (req, res, next) => {
     try {
         isValidPassword = await bcrypt.compare(password, existingUser.password);
     } catch (err) {
-        const error = new HttpError('Login failed, please checkyour email and password (500).', 500);
+        const error = new HttpError('Login failed, please checkyour email and password.', 500);
         return next(error);
     }
 
     if (!isValidPassword) {
-        const error = new HttpError('Login failed, please checkyour email and password (401).', 403);
+        const error = new HttpError('Login failed, please checkyour email and password.', 403);
         return next(error);
     }
 
