@@ -1,9 +1,8 @@
 {
-    "env": {
-        "DB_USER": "onur",
-        "DB_PASSWORD": "gXlE1yc6KKfxbztG",
-        "DB_NAME": "mern",
-        "GOOGLE_API_KEY": "AIzaSyASO6M8RMwkXneteHKe5YyGYStsOZm-ZZI",
-        "JWT_KEY": "supersecret_dont_share"
-    }
+  "env": {
+    "DB_USER": "onur",
+    "DB_PASSWORD": "gXlE1yc6KKfxbztG",
+    "DB_NAME": "todoApp",
+    "JWT_KEY": "thisissecret"
+  }
 }
