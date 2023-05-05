@@ -1,0 +1,8 @@
+{
+  "env": {
+    "DB_USER:": "onur",
+    "DB_PASSWORD": "gXlE1yc6KKfxbztG",
+    "DB_NAME": "todoApp",
+    "JWT_KEY": "thisissecret"
+  }
+}
